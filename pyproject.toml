@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "myong"
+version = "0.1.0"
+description = ""
+authors = ["Darío Ureña <darioaxel@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^5.2.7"
+psycopg2-binary = "^2.9.11"
+python-decouple = "^3.8"
+django-crispy-forms = "^2.5"
+crispy-bootstrap5 = "^2025.6"
+djangorestframework = "^3.16.1"
+djangorestframework-simplejwt = "^5.3.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,24 @@
+<!-- socios/templates/socios/socio_list.html -->
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>Lista de socios</h1>
+
+  {% if socios %}
+  <ul>
+    {% for socio in socios %}
+      <li>
+        <a href="{% url 'detalle_socio' socio.id %}">
+          {{ socio.nombre }} {{ socio.apellidos }}
+        </a>
+        — {{ socio.email }} - 
+        <a href="{% url 'pagos_socio_current_year' socio.id %}">
+          Ver pagos
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>No hay socios registrados.</p>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,66 @@
+<!-- socios/templates/socios/pagos_socio_year.html -->
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Pagos de {{ nombre_socio }} {{ apellidos_socio }} - Año {{ year }}</h2>
+    
+    <!-- Lista de pagos del año -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mes</th>
+                <th>Cuota</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pago in pagos %}
+            <tr>
+                <td>{{ pago.get_mes_display }}</td>
+                <td>{{ pago.cuota_a_pagar }}€</td>
+                <td>
+                    <span class="badge badge-{{ pago.estado }}">
+                        {{ pago.get_estado_display }}
+                    </span>
+                </td>
+                <td>
+                  
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- DESPLEGABLE DE ÚLTIMOS 4 AÑOS -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5>Cambiar año: </h5>
+            <form method="get" action="{% url 'pagos_socio_by_year' socio_id=socio_id year=year %}">
+                <div class="form-group">
+                    <select name="year" id="year-select" class="form-control" 
+                            onchange="this.form.action = this.form.action.replace(/\d{4}\/$/, this.value + '/'); alert(this.value); this.form.submit();">
+                        {% for anyo in años_disponibles %}
+                        <option value="{{ anyo }}" {% if anyo == year %}selected{% endif %}>
+                            Año {{ anyo }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Alternativa más limpia con JavaScript puro
+/* 
+    document.getElementById('year-select').addEventListener('change', function() {
+    const selectedYear = this.value;
+    const socioId = '{{ socio.id }}';
+    window.location.href = `/${socioId}/pagos/${selectedYear}/`;
+});
+*/
+</script>
+{% endblock %}

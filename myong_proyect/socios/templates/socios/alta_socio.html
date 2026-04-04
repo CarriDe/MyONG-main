@@ -1,0 +1,98 @@
+<!-- templates/socios/alta_socio.html -->
+{% extends 'base_generic.html' %} 
+{% load crispy_forms_tags %}  
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Alta de Nuevo Socio</h2>
+    
+    <form method="post" id="socio-form">
+        {% csrf_token %}
+        
+        <!-- Datos del Socio -->
+        <h4>Datos Personales</h4>
+        <div class="row">
+            <div class="col-md-6">{{ socio_form.nombre|as_crispy_field }}</div>
+            <div class="col-md-6">{{ socio_form.apellidos|as_crispy_field }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">{{ socio_form.email|as_crispy_field }}</div>
+            <div class="col-md-6">{{ socio_form.telefono|as_crispy_field }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">{{ socio_form.fecha_nacimiento|as_crispy_field }}</div>
+            <div class="col-md-6">{{ socio_form.documento_identidad|as_crispy_field }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">{{ socio_form.role|as_crispy_field }}</div>
+            <div class="col-md-6 mt-4">{{ socio_form.menor_edad|as_crispy_field }}</div>
+        </div>
+
+        <!-- Datos de Pago -->
+        <h4 class="mt-4">Información de Pago</h4>
+        <div class="row">
+            <div class="col-md-6">{{ socio_form.domicilia_pago|as_crispy_field }}</div>
+            <div class="col-md-6" id="iban-field">{{ socio_form.IBAN|as_crispy_field }}</div>
+        </div>
+
+        <!-- Dirección -->
+        <h4 class="mt-4">Dirección</h4>
+        <div class="row">
+            <div class="col-md-8">{{ direccion_form.calle|as_crispy_field }}</div>
+            <div class="col-md-4">{{ direccion_form.numero|as_crispy_field }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">{{ direccion_form.piso|as_crispy_field }}</div>
+            <div class="col-md-4">{{ direccion_form.otros|as_crispy_field }}</div>
+            <div class="col-md-4">{{ direccion_form.codigo_postal|as_crispy_field }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">{{ direccion_form.ciudad|as_crispy_field }}</div>
+            <div class="col-md-6">{{ direccion_form.provincia|as_crispy_field }}</div>
+        </div>
+        {{ direccion_form.pais|as_crispy_field }}
+
+        <!-- Tutor Legal (solo si es menor) -->
+        <!--
+        <div id="tutor-section" style="display: none;">
+            <h4 class="mt-4">Tutor Legal (Obligatorio para menores)</h4>
+            <div class="row">
+                <div class="col-md-6">{{ tutor_form.nombre|as_crispy_field }}</div>
+                <div class="col-md-6">{{ tutor_form.apellidos|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">{{ tutor_form.email|as_crispy_field }}</div>
+                <div class="col-md-6">{{ tutor_form.telefono|as_crispy_field }}</div>
+            </div>
+            {{ tutor_form.documento_identidad|as_crispy_field }}
+        </div -->
+
+        <button type="submit" class="btn btn-primary mt-4">Guardar Socio</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const domiciliaCheckbox = document.querySelector('#id_domicilia_pago');
+    const ibanField = document.querySelector('#iban-field');
+    const menorCheckbox = document.querySelector('#id_menor_edad');
+    const tutorSection = document.querySelector('#tutor-section');
+    
+    // Mostrar/ocultar IBAN
+    function toggleIBAN() {
+        ibanField.style.display = domiciliaCheckbox.checked ? 'block' : 'none';
+    }
+    
+    // Mostrar/ocultar tutor
+    function toggleTutor() {
+        tutorSection.style.display = menorCheckbox.checked ? 'block' : 'none';
+    }
+    
+    domiciliaCheckbox.addEventListener('change', toggleIBAN);
+    menorCheckbox.addEventListener('change', toggleTutor);
+    
+    toggleIBAN();
+    toggleTutor();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Detalle del socio</h2>
+    <hr>
+
+    <h4>{{ socio.nombre }} {{ socio.apellidos }}</h4>
+
+    <ul>
+        <li><strong>ID:</strong> {{ socio.id }}</li>
+        <li><strong>Fecha de nacimiento:</strong> {{ socio.fecha_nacimiento }}</li>
+        <li><strong>Menor de edad:</strong> 
+            {% if socio.menor_edad %}Sí{% else %}No{% endif %}
+        </li>
+        <li><strong>Teléfono:</strong> {{ socio.telefono }}</li>
+        <li><strong>Email:</strong> {{ socio.email }}</li>
+        <li><strong>Documento identidad:</strong> {{ socio.documento_identidad }}</li>
+        <li><strong>IBAN:</strong> {{ socio.IBAN }}</li>
+    </ul>
+
+    <h5 class="mt-4">Dirección</h5>
+    <ul>
+        <li><strong>Calle:</strong> {{ socio.direccion.calle }}</li>
+        <li><strong>Número:</strong> {{ socio.direccion.numero }}</li>
+        <li><strong>Piso:</strong> {{ socio.direccion.piso }}</li>
+        {% if socio.direccion.otros %}
+            <li><strong>Otros:</strong> {{ socio.direccion.otros }}</li>
+        {% endif %}
+        <li><strong>Ciudad:</strong> {{ socio.direccion.ciudad }}</li>
+        <li><strong>Código postal:</strong> {{ socio.direccion.codigo_postal }}</li>
+        <li><strong>Provincia:</strong> {{ socio.direccion.provincia }}</li>
+        <li><strong>País:</strong> {{ socio.direccion.pais }}</li>
+    </ul>  
+
+</div>
+
+{% endblock %}
