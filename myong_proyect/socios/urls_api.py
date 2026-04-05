@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from .api_views import SocioViewSet, PagoViewSet, pagos_por_socio, check_dni_endpoint
 
@@ -12,9 +12,10 @@ router.register(r'pagos', PagoViewSet, basename='pago')  # Genera /api/pagos/
 # /socios/{id}/     -> retrieve (GET), update (PUT/PATCH), destroy (DELETE)
 
 urlpatterns = [
-    path('', include(router.urls)),
-    # Endpoint personalizado para pagos por socio
-    path('socios/<uuid:socio_id>/pagos/', pagos_por_socio, name='api_pagos_socio'),
     # Endpoint para validar DNI
     path('socios/check-dni/', check_dni_endpoint, name='api_check_dni'),
+    re_path(r'^socios/check-dni$', check_dni_endpoint),
+    # Endpoint personalizado para pagos por socio
+    path('socios/<uuid:socio_id>/pagos/', pagos_por_socio, name='api_pagos_socio'),
+    path('', include(router.urls)),
 ]

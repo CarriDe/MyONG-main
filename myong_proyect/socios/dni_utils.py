@@ -18,7 +18,7 @@ def check_dni(dni: str) -> dict:
         return {
             "valido": False,
             "documento": dni,
-            "error": "Formato inválido. Use: 12345678A"
+            "error": "Formato inválido. Usar el formato: 12345678A"
         }
     
     # Validar letra (algoritmo módulo 23)

@@ -1,10 +1,12 @@
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from datetime import date
 
 from .models import Socio, Pago
 from .serializers import SocioSerializer, SocioCreateSerializer, PagoSerializer
+from socios.dni_utils import check_dni
 
 class SocioViewSet(viewsets.ModelViewSet):
     """
@@ -55,3 +57,43 @@ def pagos_por_socio(request, socio_id):
         'total_meses': pagos.count(),
         'total_pagado': sum(p.monto for p in pagos if p.pagado),
     })
+
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+def check_dni_endpoint(request):
+    """
+    Endpoint para validar un DNI.
+    
+    Request:
+        POST /api/socios/check-dni/
+        Body: {"documento": "12345678A"}
+    
+    Respuesta:
+        - Válido -> {"valido": true, "documento": "12345678A", "tipo": "DNI"}
+        - Inválido -> {"valido": false, "documento": "...", "error": "..."}
+    """
+    if request.method == 'GET':
+        return Response({
+            "mensaje": "Envía un POST con {'documento': '12345678A'}"
+        })
+    
+    documento = request.data.get('documento', '').strip()
+    
+    # documento = request.query_params.get('documento', '').strip()
+    #     if not documento:
+    #         return Response({
+    #             "mensaje": "Envía un POST con {'documento': '12345678A'} o usar ?documento=12345678Z"
+    #         })
+    # else:
+    #     documento = request.data.get('documento', '').strip()
+
+    if not documento:
+        return Response(
+            {'error': 'El campo "documento" es necesario'},
+            status=400
+        )
+    
+    resultado = check_dni(documento)
+    status = 200 if resultado.get('valido') else 400
+    
+    return Response(resultado, status=status)
