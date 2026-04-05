@@ -1,5 +1,26 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from .models import Socio, Direccion, Tutor, Pago
+from .dni_utils import check_dni
+
+
+class DNIValidatorSerializer(serializers.Serializer):
+    """
+    Serializer para validar documentos de identidad españoles.
+    Reutiliza la lógica de check_dni() para evitar duplicación.
+    """
+    documento = serializers.CharField(max_length=9, required=True)
+    
+    def validate_documento(self, value):
+        """
+        Valida usando la función check_dni().
+        Si check_dni() devuelve valido: False, lanza ValidationError.
+        """
+        resultado = check_dni(value)
+        if not resultado.get('valido'):
+            raise ValidationError(resultado.get('error', 'DNI inválido'))
+        return value
+
 
 class DireccionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,10 +49,19 @@ class SocioSerializer(serializers.ModelSerializer):
 class SocioCreateSerializer(serializers.ModelSerializer):
     """Serializer para escritura: permite crear socio con dirección"""
     direccion = DireccionSerializer()
+    documento_identidad = serializers.CharField(max_length=9, required=False, allow_blank=True)
     
     class Meta:
         model = Socio
-        exclude = ['fecha_alta']  # Campo automático
+        exclude = ['fecha_registro', 'id']  # Campos automáticos
+    
+    def validate_documento_identidad(self, value):
+        """Valida el DNI si se proporciona"""
+        if value:  # Solo validar si se proporciona
+            validador = DNIValidatorSerializer(data={'documento': value})
+            if not validador.is_valid():
+                raise ValidationError(validador.errors['documento'])
+        return value
     
     def create(self, validated_data):
         direccion_data = validated_data.pop('direccion')
