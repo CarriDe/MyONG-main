@@ -1,6 +1,5 @@
 # socios/dni_utils.py
 import re
-
 def check_dni(dni: str) -> dict:
     """
     Valida el formato de un DNI español (8 dígitos + letra).
